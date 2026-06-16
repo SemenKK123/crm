@@ -3,7 +3,7 @@
   "version": "1.0.0",
 "scripts": {
   "dev": "ts-node-dev --respawn src/index.ts",
-  "build": "node_modules/typescript/bin/tsc",
+  "build": "node node_modules/typescript/lib/tsc.js",
   "start": "node dist/index.js",
   "db:migrate": "node node_modules/prisma/bin/prisma.js migrate deploy",
   "db:generate": "node node_modules/prisma/bin/prisma.js generate",
