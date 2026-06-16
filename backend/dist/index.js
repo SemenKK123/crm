@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const users_1 = __importDefault(require("./routes/users"));
@@ -16,7 +15,14 @@ const dashboard_1 = __importDefault(require("./routes/dashboard"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
 app.use((0, helmet_1.default)());
-app.use((0, cors_1.default)({ origin: 'https://charismatic-creativity-production-9e74.up.railway.app', credentials: true }));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS')
+        return res.sendStatus(200);
+    next();
+});
 app.use(express_1.default.json());
 app.use('/api/auth', auth_1.default);
 app.use('/api/users', users_1.default);
