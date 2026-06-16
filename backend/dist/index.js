@@ -14,7 +14,6 @@ const categories_1 = __importDefault(require("./routes/categories"));
 const dashboard_1 = __importDefault(require("./routes/dashboard"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
-app.use((0, helmet_1.default)());
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -23,6 +22,7 @@ app.use((req, res, next) => {
         return res.sendStatus(200);
     next();
 });
+app.use((0, helmet_1.default)());
 app.use(express_1.default.json());
 app.use('/api/auth', auth_1.default);
 app.use('/api/users', users_1.default);

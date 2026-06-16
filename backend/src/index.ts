@@ -12,7 +12,6 @@ import dashboardRoutes from './routes/dashboard';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(helmet());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -20,6 +19,7 @@ app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 });
+app.use(helmet());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
