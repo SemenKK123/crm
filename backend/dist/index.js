@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const helmet_1 = __importDefault(require("helmet"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const users_1 = __importDefault(require("./routes/users"));
 const clients_1 = __importDefault(require("./routes/clients"));
@@ -18,11 +17,12 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    if (req.method === 'OPTIONS')
-        return res.sendStatus(200);
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+        return;
+    }
     next();
 });
-app.use((0, helmet_1.default)());
 app.use(express_1.default.json());
 app.use('/api/auth', auth_1.default);
 app.use('/api/users', users_1.default);
@@ -31,8 +31,4 @@ app.use('/api/tickets', tickets_1.default);
 app.use('/api/reports', reports_1.default);
 app.use('/api/categories', categories_1.default);
 app.use('/api/dashboard', dashboard_1.default);
-app.use((err, _req, res, _next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Internal server error' });
-});
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
