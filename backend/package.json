@@ -1,14 +1,14 @@
 {
   "name": "crm-backend",
   "version": "1.0.0",
-  "scripts": {
-    "dev": "ts-node-dev --respawn src/index.ts",
-    "build": "node_modules/.bin/tsc",
-    "start": "node dist/index.js",
-    "db:migrate": "prisma migrate dev",
-    "db:seed": "ts-node src/seed.ts",
-    "db:generate": "prisma generate"
-  },
+"scripts": {
+  "dev": "ts-node-dev --respawn src/index.ts",
+  "build": "node_modules/typescript/bin/tsc",
+  "start": "node dist/index.js",
+  "db:migrate": "node node_modules/prisma/bin/prisma.js migrate deploy",
+  "db:generate": "node node_modules/prisma/bin/prisma.js generate",
+  "db:seed": "ts-node src/seed.ts"
+},
   "dependencies": {
     "@prisma/client": "^5.10.0",
     "bcryptjs": "^2.4.3",
