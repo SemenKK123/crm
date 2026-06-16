@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  SPECIALIST
+  HEAD
+}
+
+enum TicketStatus {
+  NEW
+  IN_PROGRESS
+  PENDING
+  RESOLVED
+  CLOSED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  name        String
+  password    String
+  role        Role      @default(SPECIALIST)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  assignedTickets Ticket[]   @relation("AssignedTo")
+  createdTickets  Ticket[]   @relation("CreatedBy")
+  comments        Comment[]
+  auditLogs       AuditLog[]
+}
+
+model Client {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String?
+  phone       String?
+  company     String?
+  inn         String?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tickets     Ticket[]
+}
+
+model Ticket {
+  id            Int          @id @default(autoincrement())
+  title         String
+  description   String
+  status        TicketStatus @default(NEW)
+  priority      Priority     @default(MEDIUM)
+  category      String
+  slaDeadline   DateTime?
+  resolvedAt    DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  clientId      Int
+  client        Client       @relation(fields: [clientId], references: [id])
+
+  assigneeId    Int?
+  assignee      User?        @relation("AssignedTo", fields: [assigneeId], references: [id])
+
+  creatorId     Int
+  creator       User         @relation("CreatedBy", fields: [creatorId], references: [id])
+
+  comments      Comment[]
+  auditLogs     AuditLog[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  text      String
+  isInternal Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  ticketId  Int?
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id])
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slaHours  Int      @default(24)
+  createdAt DateTime @default(now())
+}
